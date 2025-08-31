@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">CampusMart</string>
+    <string name="gemini_api_key">AIzaSyAGVOsd2j2BcIdcZdbEZt5zlujTBNva8e4</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign In</string>
+    <string name="action_sign_up">Sign Up</string>
+    <string name="prompt_name">Full Name</string>
+    <string name="prompt_student_id">Student ID</string>
+    <string name="prompt_university">University Name</string>
+    <string name="prompt_phone">Phone Number</string>
+    <string name="prompt_address">Address</string>
+    <string name="upload_id">Upload Student ID Photo</string>
+    <string name="image_id_placeholder">No image selected</string>
+    <string name="login_welcome">CampusMart</string>
+    <string name="signup_title">Create a new account</string>
+    <string name="validation_error_dialog_title">Validation Error</string>
+</resources>
