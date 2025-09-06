@@ -49,9 +49,9 @@ public class LoginActivity extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         FirebaseUser user = mAuth.getCurrentUser();
                         Toast.makeText(LoginActivity.this, "Authentication successful.", Toast.LENGTH_SHORT).show();
-                        // TODO: Navigate to main app activity
-                        // startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                        // finish();
+                        // Navigate to NewsfeedActivity
+                        startActivity(new Intent(LoginActivity.this, NewsfeedActivity.class));
+                        finish(); // Finish LoginActivity so user can't go back to it
                     } else {
                         Toast.makeText(LoginActivity.this, "Authentication failed: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
                     }
@@ -64,10 +64,9 @@ public class LoginActivity extends AppCompatActivity {
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
-            // User is already signed in.
-            // TODO: Navigate to main app activity
-            // startActivity(new Intent(LoginActivity.this, MainActivity.class));
-            // finish();
+            // User is already signed in, navigate to NewsfeedActivity
+            startActivity(new Intent(LoginActivity.this, NewsfeedActivity.class));
+            finish(); // Finish LoginActivity so user can't go back to it
         }
     }
 }

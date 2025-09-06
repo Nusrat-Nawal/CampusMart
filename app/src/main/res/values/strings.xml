@@ -16,4 +16,20 @@
     <string name="login_welcome">CampusMart</string>
     <string name="signup_title">Create a new account</string>
     <string name="validation_error_dialog_title">Validation Error</string>
+    <string name="post_item">Post Item</string>
+    <string name="wishboard">Wishboard</string>
+    <string name="profile">Profile</string>
+
+    <string-array name="post_item_categories">
+        <item>Select Category</item>
+        <item>Electronics &amp; Stationary</item>
+        <item>Cosmetics</item>
+        <item>Accessories</item>
+    </string-array>
+
+    <string-array name="post_item_types">
+        <item>Select Type</item>
+        <item>Sell</item>
+        <item>Rent</item>
+    </string-array>
 </resources>
