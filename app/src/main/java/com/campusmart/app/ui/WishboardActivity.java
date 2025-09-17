@@ -39,10 +39,10 @@ public class WishboardActivity extends AppCompatActivity {
 
     // Updated array of colors for the item names
     private int[] itemValueColors = new int[] {
-        Color.rgb(204, 153, 255), // Light Purple
-        Color.rgb(144, 238, 144), // Light Green
-        Color.rgb(255, 182, 193), // Light Pink
-        Color.rgb(188, 143, 143)  // Light Maroon (Rosy Brown)
+        Color.rgb(204, 153, 255), // light Purple
+        Color.rgb(0, 100, 0), // dark Green
+        Color.rgb(139, 0, 0), // dark maroon
+        Color.rgb(210, 105, 30)  // chocolate colour
     };
     private int colorIndex = 0;
 
@@ -77,7 +77,7 @@ public class WishboardActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        colorIndex = 0; // Reset color index each time we load wishes
+        colorIndex = 0;
         loadWishes();
     }
 

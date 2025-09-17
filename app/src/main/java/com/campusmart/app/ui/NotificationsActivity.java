@@ -43,8 +43,8 @@ public class NotificationsActivity extends AppCompatActivity implements Notifica
         Toolbar toolbar = findViewById(R.id.toolbarNotifications);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle("Notifications");
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true); // Enable back arrow
+            getSupportActionBar().setTitle("Notifications of Wishes");
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
         db = FirebaseFirestore.getInstance();
@@ -89,7 +89,7 @@ public class NotificationsActivity extends AppCompatActivity implements Notifica
                                 notificationList.add(notification);
                             }
                         }
-                        notificationAdapter.notifyDataSetChanged(); // Use notifyDataSetChanged after bulk update
+                        notificationAdapter.notifyDataSetChanged();
                     }
                 })
                 .addOnFailureListener(e -> {
@@ -103,14 +103,14 @@ public class NotificationsActivity extends AppCompatActivity implements Notifica
 
     @Override
     public void onNotificationClick(Notification notification) {
-        // Mark notification as read in Firestore if it's not already read
+
         if (!notification.isRead()) {
             db.collection("notifications").document(notification.getId())
                     .update("isRead", true)
                     .addOnSuccessListener(aVoid -> {
                         Log.d(TAG, "Notification marked as read: " + notification.getId());
-                        notification.setRead(true); // Update local model
-                        // Find the item in the list and notify adapter for visual update if necessary (though adapter handles it optimistically)
+                        notification.setRead(true);
+
                         int itemPosition = notificationList.indexOf(notification);
                         if (itemPosition != -1) {
                             notificationAdapter.notifyItemChanged(itemPosition);
@@ -118,16 +118,14 @@ public class NotificationsActivity extends AppCompatActivity implements Notifica
                     })
                     .addOnFailureListener(e -> Log.e(TAG, "Error marking notification as read", e));
         }
-        // You could also navigate to the specific post or wish here if you want
-        // For now, just a Toast
-        // Toast.makeText(this, "Notification clicked: " + notification.getMessage(), Toast.LENGTH_SHORT).show();
+
+
     }
 
     @Override
     public boolean onSupportNavigateUp() {
-        onBackPressed(); // Handle back arrow click
+        onBackPressed();
         return true;
     }
 
-    // Consider adding a swipe-to-refresh or a "Mark all as read" button in the future
 }

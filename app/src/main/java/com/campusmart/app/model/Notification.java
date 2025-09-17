@@ -11,7 +11,6 @@ public class Notification {
     private String triggeringPostId;
     private String wishId;
 
-    // Required empty public constructor for Firestore deserialization
     public Notification() {}
 
     public Notification(String id, String message, Timestamp timestamp, boolean isRead, String notifiedUserId, String triggeringPostId, String wishId) {

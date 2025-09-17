@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -10,9 +9,9 @@
         style="?android:attr/buttonBarStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="#673AB7"
         android:orientation="horizontal"
-        android:padding="8dp"
-        android:background="#673AB7">
+        android:padding="8dp">
 
         <Button
             android:id="@+id/buttonPostItem"
@@ -20,7 +19,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/post_item"/>
+            android:text="@string/post_item" />
 
         <Button
             android:id="@+id/buttonWishboard"
@@ -28,7 +27,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/wishboard"/>
+            android:text="@string/wishboard" />
 
         <Button
             android:id="@+id/buttonProfile"
@@ -36,7 +35,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/profile"/>
+            android:text="@string/profile" />
     </LinearLayout>
 
     <!-- ScrollView for dynamic posts from Firebase -->
@@ -49,7 +48,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="8dp"/>
+            android:padding="8dp" />
 
     </ScrollView>
 </LinearLayout>

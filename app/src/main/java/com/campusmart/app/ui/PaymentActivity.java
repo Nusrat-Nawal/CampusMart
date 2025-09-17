@@ -26,7 +26,7 @@ public class PaymentActivity extends AppCompatActivity {
     private LinearLayout layoutPaymentOptions;
     private CardView cardViewPaymentDetails, cardViewReceipt;
     private TextView textViewReceiptTitle, textViewReceiptTransactionId, textViewReceiptPaymentMethod, textViewReceiptAmountPaid;
-    private TextView textViewReceiptUserName, textViewReceiptUserEmail; // Added for user details
+    private TextView textViewReceiptUserName, textViewReceiptUserEmail;
 
     private double itemPrice;
     private double feeToPay;
@@ -57,8 +57,8 @@ public class PaymentActivity extends AppCompatActivity {
 
         cardViewReceipt = findViewById(R.id.cardViewReceipt);
         textViewReceiptTitle = findViewById(R.id.textViewReceiptTitle);
-        textViewReceiptUserName = findViewById(R.id.textViewReceiptUserName); // Initialize
-        textViewReceiptUserEmail = findViewById(R.id.textViewReceiptUserEmail); // Initialize
+        textViewReceiptUserName = findViewById(R.id.textViewReceiptUserName);
+        textViewReceiptUserEmail = findViewById(R.id.textViewReceiptUserEmail);
         textViewReceiptTransactionId = findViewById(R.id.textViewReceiptTransactionId);
         textViewReceiptPaymentMethod = findViewById(R.id.textViewReceiptPaymentMethod);
         textViewReceiptAmountPaid = findViewById(R.id.textViewReceiptAmountPaid);
@@ -81,8 +81,7 @@ public class PaymentActivity extends AppCompatActivity {
 
         if (currentUser == null) {
             Toast.makeText(this, "Error: User not logged in.", Toast.LENGTH_LONG).show();
-            // Optionally finish activity or redirect to login
-            // For now, we'll allow proceeding but receipt info will be blank for user details
+
         }
 
         calculateAndDisplayFees();
@@ -105,7 +104,7 @@ public class PaymentActivity extends AppCompatActivity {
         layoutPaymentOptions.setVisibility(View.GONE);
         textViewPaymentInstruction.setVisibility(View.GONE);
 
-        // Populate User Info on Receipt
+
         if (currentUser != null) {
             String userName = currentUser.getDisplayName();
             String userEmail = currentUser.getEmail();
@@ -120,7 +119,7 @@ public class PaymentActivity extends AppCompatActivity {
         textViewReceiptTransactionId.setText("Transaction ID: " + fakeTransactionId);
         textViewReceiptPaymentMethod.setText("Paid via: " + paymentMethod);
         textViewReceiptAmountPaid.setText(String.format(Locale.getDefault(), "Amount Paid: %.2f Tk", feeToPay));
-        textViewReceiptTitle.setText("Payment Successful!");
+        textViewReceiptTitle.setText("Transaction Completed! (Simulated)");
 
         cardViewReceipt.setVisibility(View.VISIBLE);
         buttonConfirmPosting.setVisibility(View.VISIBLE);

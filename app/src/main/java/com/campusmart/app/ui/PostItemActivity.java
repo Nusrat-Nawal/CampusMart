@@ -131,13 +131,10 @@ public class PostItemActivity extends AppCompatActivity {
                 if (selectedType.equalsIgnoreCase("Rent")) {
                     editTextRentDuration.setVisibility(View.VISIBLE);
                 } else {
-                    editTextRentDuration.setVisibility(View.GONE);
-                }
-            }
+                    editTextRentDuration.setVisibility(View.GONE); }  }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                editTextRentDuration.setVisibility(View.GONE);
-            }
+                editTextRentDuration.setVisibility(View.GONE);  }
         });
 
         buttonUploadImage.setOnClickListener(v -> {
@@ -161,9 +158,7 @@ public class PostItemActivity extends AppCompatActivity {
                     double priceValue = Double.parseDouble(price);
                     if (priceValue <= 0) { editTextPrice.setError("Price must be positive"); isValid = false;}
                 } catch (NumberFormatException e) {
-                    editTextPrice.setError("Invalid price format"); isValid = false;
-                }
-            }
+                    editTextPrice.setError("Invalid price format"); isValid = false; } }
 
             if (category.equalsIgnoreCase("Select Category")) { Toast.makeText(this, "Please select a category", Toast.LENGTH_SHORT).show(); isValid = false; }
             if (type.equalsIgnoreCase("Select Type")) { Toast.makeText(this, "Please select an item type", Toast.LENGTH_SHORT).show(); isValid = false; }
@@ -221,8 +216,7 @@ public class PostItemActivity extends AppCompatActivity {
         } catch (IOException e) {
             Toast.makeText(this, "Error converting image to Base64: " + e.getMessage(), Toast.LENGTH_LONG).show();
             return null;
-        }
-    }
+        } }
 
     private void processAndSavePostWithBase64Image(String name, String price, String category, String type, String rentDuration) {
         if (selectedImageUri == null) {
@@ -307,23 +301,19 @@ public class PostItemActivity extends AppCompatActivity {
 
                     if (wishUserId == null || wishItemName == null) {
                         Log.w(TAG, "Skipping wish due to missing userId or itemName: " + wishId);
-                        continue;
-                    }
+                        continue; }
 
-                    // Don't notify the user if they posted the item that matches their own wish
                     if (wishUserId.equals(newPostAuthorId)) {
                         Log.d(TAG, "Skipping notification for self-posted item for wish: " + wishId);
-                        continue;
-                    }
+                        continue; }
 
-                    // Case-insensitive matching: if wish item name contains new post name, or vice-versa
                     boolean namesMatch = wishItemName.toLowerCase(Locale.ROOT).contains(newPostName.toLowerCase(Locale.ROOT)) ||
                                          newPostName.toLowerCase(Locale.ROOT).contains(wishItemName.toLowerCase(Locale.ROOT));
 
                     if (namesMatch) {
                         Log.d(TAG, "Match found! Wish: " + wishItemName + ", New Post: " + newPostName);
                         Map<String, Object> notification = new HashMap<>();
-                        notification.put("notifiedUserId", wishUserId); // User who made the wish
+                        notification.put("notifiedUserId", wishUserId); // User who posted the wish
                         notification.put("triggeringPostId", newPostId);
                         notification.put("triggeringPostName", newPostName);
                         notification.put("triggeringPostAuthorId", newPostAuthorId); // User who posted the item

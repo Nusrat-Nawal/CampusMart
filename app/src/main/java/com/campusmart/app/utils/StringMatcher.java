@@ -26,10 +26,9 @@ public class StringMatcher {
     }
 
     private static String normalize(String s) {
-        // Trim leading/trailing whitespace, convert to lowercase, and replace multiple spaces with a single space.
+
         s = s.trim().toLowerCase();
         s = Pattern.compile("\\s+").matcher(s).replaceAll(" ");
-        // Additionally, remove common non-alphanumeric characters that might be OCR errors
         s = s.replaceAll("[^a-z0-9 ]", "");
         return s;
     }

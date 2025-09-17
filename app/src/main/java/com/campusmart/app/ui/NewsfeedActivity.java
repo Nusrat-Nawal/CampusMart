@@ -37,7 +37,7 @@ public class NewsfeedActivity extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
         newsfeedContainer = findViewById(R.id.newsfeedContainer);
-        // The activity_newsfeed.xml has android:background="#ECECEC", which is good for cards to pop.
+
 
         findViewById(R.id.buttonPostItem).setOnClickListener(v ->
                 startActivity(new Intent(this, PostItemActivity.class))
@@ -51,22 +51,16 @@ public class NewsfeedActivity extends AppCompatActivity {
                 Toast.makeText(this, "Profile coming soon", Toast.LENGTH_SHORT).show()
         );
     }
-
     @Override
     protected void onResume() {
         super.onResume();
-        loadPosts(); 
-    }
-
-    // Helper method to convert dp to pixels
+        loadPosts(); }
     private int dpToPx(int dp) {
         return (int) TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP,
                 dp,
                 getResources().getDisplayMetrics()
-        );
-    }
-
+        ); }
     private void loadPosts() {
         if (FirebaseAuth.getInstance().getCurrentUser() == null) {
             Log.e(TAG, "User is NOT authenticated. Cannot load posts.");
@@ -95,22 +89,20 @@ public class NewsfeedActivity extends AppCompatActivity {
                         newsfeedContainer.addView(tv);
                     } else {
                         for (DocumentSnapshot doc : queryDocumentSnapshots) {
-                            // Create CardView for each post
+
                             CardView cardView = new CardView(this);
                             LinearLayout.LayoutParams cardLayoutParams = new LinearLayout.LayoutParams(
                                     LinearLayout.LayoutParams.MATCH_PARENT,
                                     LinearLayout.LayoutParams.WRAP_CONTENT
                             );
-                            // Margins for the card: l, t, r, b
+
                             cardLayoutParams.setMargins(dpToPx(8), dpToPx(4), dpToPx(8), dpToPx(12));
                             cardView.setLayoutParams(cardLayoutParams);
-                            cardView.setRadius(dpToPx(8)); // Rounded corners
-                            cardView.setCardElevation(dpToPx(4)); // Elevation for shadow
-                            // Padding inside the card, around the main postLayout
+                            cardView.setRadius(dpToPx(8));
+                            cardView.setCardElevation(dpToPx(4));
                             cardView.setContentPadding(dpToPx(12), dpToPx(12), dpToPx(12), dpToPx(12)); 
                             cardView.setCardBackgroundColor(Color.WHITE);
 
-                            // This is the main content layout that was previously directly added
                             LinearLayout postLayout = new LinearLayout(this);
                             postLayout.setOrientation(LinearLayout.HORIZONTAL);
                             postLayout.setLayoutParams(new LinearLayout.LayoutParams(
@@ -121,13 +113,13 @@ public class NewsfeedActivity extends AppCompatActivity {
                             ImageView imageView = new ImageView(this);
                             LinearLayout.LayoutParams imageParams = new LinearLayout.LayoutParams(
                                     0, 
-                                    dpToPx(160) // Standardized height for image, e.g., 160dp
+                                    dpToPx(160) //
                             );
                             imageParams.weight = 1.0f; 
-                            imageParams.setMargins(0,0,dpToPx(12),0); // Right margin for image
+                            imageParams.setMargins(0,0,dpToPx(12),0);
                             imageView.setLayoutParams(imageParams);
                             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                            imageView.setBackgroundColor(Color.LTGRAY); // Placeholder bg
+                            imageView.setBackgroundColor(Color.LTGRAY);
 
                             if (imageBase64 != null && !imageBase64.isEmpty()) {
                                 try {

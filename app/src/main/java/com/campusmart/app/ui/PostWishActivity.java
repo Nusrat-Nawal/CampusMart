@@ -76,7 +76,7 @@ public class PostWishActivity extends AppCompatActivity {
         }
 
         String itemName = editTextWishItemName.getText().toString().trim();
-        String itemDescription = editTextWishItemDescription.getText().toString().trim(); // Get description
+        String itemDescription = editTextWishItemDescription.getText().toString().trim();
         String selectedCategory = spinnerWishCategory.getSelectedItem().toString();
         String rentDuration = editTextWishRentDuration.getText().toString().trim();
 
@@ -98,7 +98,7 @@ public class PostWishActivity extends AppCompatActivity {
         wish.put("userId", currentUser.getUid());
         wish.put("userEmail", currentUser.getEmail());
         wish.put("itemName", itemName);
-        wish.put("itemDescription", itemDescription.isEmpty() ? "N/A" : itemDescription); // Store description, default to N/A
+        wish.put("itemDescription", itemDescription.isEmpty() ? "N/A" : itemDescription);
         wish.put("wishType", wishType);
         wish.put("category", selectedCategory);
         if (wishType.equals("Rent")) {

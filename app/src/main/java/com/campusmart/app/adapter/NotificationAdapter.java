@@ -88,8 +88,8 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
             itemView.setOnClickListener(v -> {
                 listener.onNotificationClick(notification);
-                // Visually mark as read immediately for better UX, even before DB update
-                // The actual DB update will be handled in the Activity
+
+
                 textViewMessage.setTypeface(null, Typeface.NORMAL);
             });
         }
