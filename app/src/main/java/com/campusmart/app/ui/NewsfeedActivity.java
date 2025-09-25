@@ -50,7 +50,7 @@ public class NewsfeedActivity extends AppCompatActivity {
         );
 
         findViewById(R.id.buttonProfile).setOnClickListener(v ->
-                Toast.makeText(this, "Profile coming soon", Toast.LENGTH_SHORT).show()
+                startActivity(new Intent(this, ProfileActivity.class))
         );
     }
     @Override

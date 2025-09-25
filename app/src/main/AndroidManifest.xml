@@ -58,7 +58,9 @@
         <activity
             android:name=".ui.NotificationsActivity"
             android:exported="false" />
-
+        <activity
+            android:name=".ui.ProfileActivity"
+            android:exported="false" />
     </application>
 
 </manifest>
