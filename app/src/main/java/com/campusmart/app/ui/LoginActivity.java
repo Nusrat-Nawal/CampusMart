@@ -48,7 +48,7 @@ public class LoginActivity extends AppCompatActivity {
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
                         FirebaseUser user = mAuth.getCurrentUser();
-                        Toast.makeText(LoginActivity.this, "Authentication successful.", Toast.LENGTH_SHORT).show();
+                       // Toast.makeText(LoginActivity.this, "Authentication successful.", Toast.LENGTH_SHORT).show();
                         // Navigate to NewsfeedActivity
                         startActivity(new Intent(LoginActivity.this, NewsfeedActivity.class));
                         finish(); // Finish LoginActivity so user can't go back to it
@@ -65,8 +65,8 @@ public class LoginActivity extends AppCompatActivity {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
             // User is already signed in, navigate to NewsfeedActivity
-            startActivity(new Intent(LoginActivity.this, NewsfeedActivity.class));
-            finish(); // Finish LoginActivity so user can't go back to it
+            // startActivity(new Intent(LoginActivity.this, NewsfeedActivity.class));
+            // finish(); // Finish LoginActivity so user can't go back to it
         }
     }
 }
