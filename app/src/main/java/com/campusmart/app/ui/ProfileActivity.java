@@ -20,7 +20,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 public class ProfileActivity extends AppCompatActivity {
 
     private TextView nameTextView, universityTextView, phoneTextView, emailTextView;
-    private Button logoutButton;
+    private Button logoutButton, mySalesButton, myOrdersButton;
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
@@ -38,6 +38,18 @@ public class ProfileActivity extends AppCompatActivity {
         phoneTextView = findViewById(R.id.phone_textview);
         emailTextView = findViewById(R.id.email_textview);
         logoutButton = findViewById(R.id.logout_button);
+        mySalesButton = findViewById(R.id.my_sales_button);
+        myOrdersButton = findViewById(R.id.my_orders_button);
+
+        mySalesButton.setOnClickListener(v -> {
+            Intent intent = new Intent(ProfileActivity.this, MySalesActivity.class);
+            startActivity(intent);
+        });
+
+        myOrdersButton.setOnClickListener(v -> {
+            Intent intent = new Intent(ProfileActivity.this, MyOrdersActivity.class);
+            startActivity(intent);
+        });
 
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override

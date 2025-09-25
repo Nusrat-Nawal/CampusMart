@@ -26,6 +26,9 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class NewsfeedActivity extends AppCompatActivity {
 
     FirebaseFirestore db;
@@ -219,7 +222,7 @@ public class NewsfeedActivity extends AppCompatActivity {
                                 Log.d(TAG, "Attempting to show seller info for post: " + doc.getId());
                                 String sellerId = doc.getString("authorId");
                                 if (sellerId != null && !sellerId.isEmpty()) {
-                                    showSellerInfo(sellerId);
+                                    showSellerInfo(sellerId, doc.getId(), postType);
                                 } else {
                                     Log.e(TAG, "Post with ID " + doc.getId() + " is missing an authorId.");
                                     Toast.makeText(NewsfeedActivity.this, "Seller information not available.", Toast.LENGTH_SHORT).show();
@@ -238,7 +241,7 @@ public class NewsfeedActivity extends AppCompatActivity {
                 });
     }
 
-    private void showSellerInfo(String sellerId) {
+    private void showSellerInfo(String sellerId, String postId, String postType) {
         Log.d(TAG, "Fetching seller info for userId: " + sellerId);
         db.collection("users").document(sellerId).get()
                 .addOnSuccessListener(documentSnapshot -> {
@@ -246,7 +249,8 @@ public class NewsfeedActivity extends AppCompatActivity {
                         String name = documentSnapshot.getString("name");
                         String email = documentSnapshot.getString("email");
                         String phoneNumber = documentSnapshot.getString("phoneNumber");
-                        String address = documentSnapshot.getString("address");
+                        String address = documentSnapshot.getString("university");
+                        final String sellerName = name;
 
                         new AlertDialog.Builder(this)
                                 .setTitle("Seller Information")
@@ -255,6 +259,9 @@ public class NewsfeedActivity extends AppCompatActivity {
                                         "Phone: " + phoneNumber + "\n" +
                                         "Address: " + address)
                                 .setPositiveButton("OK", null)
+                                .setNegativeButton("Confirm Order", (dialog, which) -> {
+                                    createOrder(postId, sellerId, postType, sellerName);
+                                })
                                 .show();
                     } else {
                         Log.e(TAG, "Seller document not found for userId: " + sellerId);
@@ -265,5 +272,59 @@ public class NewsfeedActivity extends AppCompatActivity {
                     Log.e(TAG, "Error fetching seller info for userId: " + sellerId, e);
                     Toast.makeText(NewsfeedActivity.this, "Failed to get seller info.", Toast.LENGTH_SHORT).show();
                 });
+    }
+
+    private void createOrder(String postId, String sellerId, String orderType, String sellerName) {
+        String buyerId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        if(buyerId.equals(sellerId)) {
+            Toast.makeText(this, "You cannot order your own product.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        db.collection("users").document(buyerId).get().addOnSuccessListener(buyerDoc -> {
+            if (buyerDoc.exists()) {
+                String buyerName = buyerDoc.getString("name");
+
+                db.collection("posts").document(postId).get().addOnSuccessListener(postDoc -> {
+                    if (postDoc.exists()) {
+                        String productName = postDoc.getString("name");
+
+                        Map<String, Object> order = new HashMap<>();
+                        order.put("productId", postId);
+                        order.put("productName", productName);
+                        order.put("buyerId", buyerId);
+                        order.put("buyerName", buyerName);
+                        order.put("sellerId", sellerId);
+                        order.put("sellerName", sellerName);
+                        order.put("orderType", orderType);
+                        order.put("status", "pending");
+                        order.put("timestamp", com.google.firebase.firestore.FieldValue.serverTimestamp());
+
+                        db.collection("orders")
+                                .add(order)
+                                .addOnSuccessListener(documentReference -> {
+                                    Toast.makeText(NewsfeedActivity.this, "Order placed successfully!", Toast.LENGTH_SHORT).show();
+                                })
+                                .addOnFailureListener(e -> {
+                                    Toast.makeText(NewsfeedActivity.this, "Failed to place order.", Toast.LENGTH_SHORT).show();
+                                    Log.e(TAG, "Error creating order", e);
+                                });
+                    } else {
+                        Toast.makeText(NewsfeedActivity.this, "Failed to place order. Product not found.", Toast.LENGTH_SHORT).show();
+                        Log.e(TAG, "Error creating order: post not found with id " + postId);
+                    }
+                }).addOnFailureListener(e -> {
+                    Toast.makeText(NewsfeedActivity.this, "Failed to place order.", Toast.LENGTH_SHORT).show();
+                    Log.e(TAG, "Error getting post details for order", e);
+                });
+            } else {
+                Toast.makeText(NewsfeedActivity.this, "Failed to place order. Buyer not found.", Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "Error creating order: buyer not found with id " + buyerId);
+            }
+        }).addOnFailureListener(e -> {
+            Toast.makeText(NewsfeedActivity.this, "Failed to place order.", Toast.LENGTH_SHORT).show();
+            Log.e(TAG, "Error getting buyer details for order", e);
+        });
     }
 }

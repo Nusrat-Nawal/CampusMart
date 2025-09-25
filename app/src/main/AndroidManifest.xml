@@ -61,6 +61,12 @@
         <activity
             android:name=".ui.ProfileActivity"
             android:exported="false" />
+        <activity
+            android:name=".ui.MySalesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.MyOrdersActivity"
+            android:exported="false" />
     </application>
 
 </manifest>
