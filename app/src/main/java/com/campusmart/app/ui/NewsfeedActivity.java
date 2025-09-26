@@ -153,116 +153,115 @@ public class NewsfeedActivity extends AppCompatActivity {
                                 } else {
 
                                     for (DocumentSnapshot doc : queryDocumentSnapshots) {
-                                        String name = doc.getString("name");
-                                        String price = doc.getString("price");
-                                        String type = doc.getString("type");
-                                        String postCategory = doc.getString("category");
-                                        String rentDuration = doc.getString("rentDuration");
-                                        String authorId = doc.getString("authorId");
-                                        String imageBase64 = doc.getString("imageBase64");
                                         final String postId = doc.getId();
                                         boolean isSold = soldProductIds.contains(postId);
 
-                                        CardView cardView = new CardView(this);
-                                        LinearLayout.LayoutParams cardLayoutParams = new LinearLayout.LayoutParams(
-                                                LinearLayout.LayoutParams.MATCH_PARENT,
-                                                LinearLayout.LayoutParams.WRAP_CONTENT
-                                        );
-                                        cardLayoutParams.setMargins(dpToPx(8), dpToPx(4), dpToPx(8), dpToPx(12));
-                                        cardView.setLayoutParams(cardLayoutParams);
-                                        cardView.setRadius(dpToPx(8));
-                                        cardView.setCardElevation(dpToPx(4));
-                                        cardView.setContentPadding(dpToPx(12), dpToPx(12), dpToPx(12), dpToPx(12));
-                                        cardView.setCardBackgroundColor(Color.WHITE);
+                                        if (!isSold) { // Only add the card if the product is not sold
+                                            String name = doc.getString("name");
+                                            String price = doc.getString("price");
+                                            String type = doc.getString("type");
+                                            String postCategory = doc.getString("category");
+                                            String rentDuration = doc.getString("rentDuration");
+                                            String authorId = doc.getString("authorId");
+                                            String imageBase64 = doc.getString("imageBase64");
 
-                                        LinearLayout postLayout = new LinearLayout(this);
-                                        postLayout.setOrientation(LinearLayout.HORIZONTAL);
-                                        postLayout.setLayoutParams(new LinearLayout.LayoutParams(
-                                                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-                                        postLayout.setGravity(Gravity.CENTER_VERTICAL);
+                                            CardView cardView = new CardView(this);
+                                            LinearLayout.LayoutParams cardLayoutParams = new LinearLayout.LayoutParams(
+                                                    LinearLayout.LayoutParams.MATCH_PARENT,
+                                                    LinearLayout.LayoutParams.WRAP_CONTENT
+                                            );
+                                            cardLayoutParams.setMargins(dpToPx(8), dpToPx(4), dpToPx(8), dpToPx(12));
+                                            cardView.setLayoutParams(cardLayoutParams);
+                                            cardView.setRadius(dpToPx(8));
+                                            cardView.setCardElevation(dpToPx(4));
+                                            cardView.setContentPadding(dpToPx(12), dpToPx(12), dpToPx(12), dpToPx(12));
+                                            cardView.setCardBackgroundColor(Color.WHITE);
 
-                                        ImageView imageView = new ImageView(this);
-                                        LinearLayout.LayoutParams imageParams = new LinearLayout.LayoutParams(
-                                                0, dpToPx(160));
-                                        imageParams.weight = 1.0f;
-                                        imageParams.setMargins(0,0,dpToPx(12),0);
-                                        imageView.setLayoutParams(imageParams);
-                                        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                                        imageView.setBackgroundColor(Color.LTGRAY);
+                                            LinearLayout postLayout = new LinearLayout(this);
+                                            postLayout.setOrientation(LinearLayout.HORIZONTAL);
+                                            postLayout.setLayoutParams(new LinearLayout.LayoutParams(
+                                                    LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+                                            postLayout.setGravity(Gravity.CENTER_VERTICAL);
 
-                                        // Load image from Base64 string
-                                        if (imageBase64 != null && !imageBase64.isEmpty()) {
-                                            try {
-                                                byte[] imageBytes = Base64.decode(imageBase64, Base64.DEFAULT);
-                                                Glide.with(NewsfeedActivity.this)
-                                                        .asBitmap()
-                                                        .load(imageBytes)
-                                                        .placeholder(R.drawable.ic_launcher_background)
-                                                        .error(R.drawable.ic_launcher_foreground)
-                                                        .into(imageView);
-                                            } catch (IllegalArgumentException e) {
-                                                Log.e(TAG, "Error decoding Base64 string for post: " + doc.getId(), e);
-                                                imageView.setImageResource(R.drawable.ic_launcher_foreground);
+                                            ImageView imageView = new ImageView(this);
+                                            LinearLayout.LayoutParams imageParams = new LinearLayout.LayoutParams(
+                                                    0, dpToPx(160));
+                                            imageParams.weight = 1.0f;
+                                            imageParams.setMargins(0,0,dpToPx(12),0);
+                                            imageView.setLayoutParams(imageParams);
+                                            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                                            imageView.setBackgroundColor(Color.LTGRAY);
+
+                                            // Load image from Base64 string
+                                            if (imageBase64 != null && !imageBase64.isEmpty()) {
+                                                try {
+                                                    byte[] imageBytes = Base64.decode(imageBase64, Base64.DEFAULT);
+                                                    Glide.with(NewsfeedActivity.this)
+                                                            .asBitmap()
+                                                            .load(imageBytes)
+                                                            .placeholder(R.drawable.ic_launcher_background)
+                                                            .error(R.drawable.ic_launcher_foreground)
+                                                            .into(imageView);
+                                                } catch (IllegalArgumentException e) {
+                                                    Log.e(TAG, "Error decoding Base64 string for post: " + doc.getId(), e);
+                                                    imageView.setImageResource(R.drawable.ic_launcher_foreground);
+                                                }
+                                            } else {
+                                                imageView.setImageResource(R.drawable.ic_launcher_background);
                                             }
-                                        } else {
-                                            imageView.setImageResource(R.drawable.ic_launcher_background);
-                                        }
-                                        postLayout.addView(imageView);
+                                            postLayout.addView(imageView);
 
-                                        LinearLayout textInfoLayout = new LinearLayout(this);
-                                        textInfoLayout.setOrientation(LinearLayout.VERTICAL);
-                                        LinearLayout.LayoutParams textInfoParams = new LinearLayout.LayoutParams(
-                                                0, LinearLayout.LayoutParams.WRAP_CONTENT);
-                                        textInfoParams.weight = 1.5f;
-                                        textInfoLayout.setLayoutParams(textInfoParams);
-                                        TextView tvName = new TextView(this);
-                                        tvName.setText((name != null ? name : "N/A"));
-                                        tvName.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
-                                        tvName.setTextColor(Color.BLACK);
-                                        tvName.setTypeface(null, Typeface.BOLD);
-                                        LinearLayout.LayoutParams nameParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                                        nameParams.setMargins(0,0,0,dpToPx(4));
-                                        tvName.setLayoutParams(nameParams);
-                                        textInfoLayout.addView(tvName);
+                                            LinearLayout textInfoLayout = new LinearLayout(this);
+                                            textInfoLayout.setOrientation(LinearLayout.VERTICAL);
+                                            LinearLayout.LayoutParams textInfoParams = new LinearLayout.LayoutParams(
+                                                    0, LinearLayout.LayoutParams.WRAP_CONTENT);
+                                            textInfoParams.weight = 1.5f;
+                                            textInfoLayout.setLayoutParams(textInfoParams);
+                                            TextView tvName = new TextView(this);
+                                            tvName.setText((name != null ? name : "N/A"));
+                                            tvName.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
+                                            tvName.setTextColor(Color.BLACK);
+                                            tvName.setTypeface(null, Typeface.BOLD);
+                                            LinearLayout.LayoutParams nameParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                                            nameParams.setMargins(0,0,0,dpToPx(4));
+                                            tvName.setLayoutParams(nameParams);
+                                            textInfoLayout.addView(tvName);
 
-                                        TextView tvCategory = new TextView(this);
-                                        tvCategory.setText("Category: " + (postCategory != null ? postCategory : "N/A"));
-                                        tvCategory.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
-                                        tvCategory.setTextColor(Color.DKGRAY);
-                                        textInfoLayout.addView(tvCategory);
+                                            TextView tvCategory = new TextView(this);
+                                            tvCategory.setText("Category: " + (postCategory != null ? postCategory : "N/A"));
+                                            tvCategory.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+                                            tvCategory.setTextColor(Color.DKGRAY);
+                                            textInfoLayout.addView(tvCategory);
 
-                                        TextView tvType = new TextView(this);
-                                        tvType.setText("Type: " + (type != null ? type : "N/A"));
-                                        tvType.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
-                                        tvType.setTextColor(Color.DKGRAY);
-                                        textInfoLayout.addView(tvType);
+                                            TextView tvType = new TextView(this);
+                                            tvType.setText("Type: " + (type != null ? type : "N/A"));
+                                            tvType.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+                                            tvType.setTextColor(Color.DKGRAY);
+                                            textInfoLayout.addView(tvType);
 
-                                        TextView tvPrice = new TextView(this);
-                                        tvPrice.setText("Price: " + (price != null ? price : "0") + " Tk");
-                                        tvPrice.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
-                                        tvPrice.setTextColor(Color.rgb(0, 100, 0));
-                                        tvPrice.setTypeface(null, Typeface.BOLD);
-                                        LinearLayout.LayoutParams priceParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                                        priceParams.setMargins(0,dpToPx(4),0,0);
-                                        tvPrice.setLayoutParams(priceParams);
-                                        textInfoLayout.addView(tvPrice);
+                                            TextView tvPrice = new TextView(this);
+                                            tvPrice.setText("Price: " + (price != null ? price : "0") + " Tk");
+                                            tvPrice.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+                                            tvPrice.setTextColor(Color.rgb(0, 100, 0));
+                                            tvPrice.setTypeface(null, Typeface.BOLD);
+                                            LinearLayout.LayoutParams priceParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                                            priceParams.setMargins(0,dpToPx(4),0,0);
+                                            tvPrice.setLayoutParams(priceParams);
+                                            textInfoLayout.addView(tvPrice);
 
-                                        if (type != null && type.equalsIgnoreCase("Rent") && rentDuration != null && !rentDuration.isEmpty() && !rentDuration.equals("N/A")) {
-                                            TextView tvRentDuration = new TextView(this);
-                                            tvRentDuration.setText("Rent Duration: " + rentDuration);
-                                            tvRentDuration.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
-                                            tvRentDuration.setTextColor(Color.DKGRAY);
-                                            textInfoLayout.addView(tvRentDuration);
-                                        }
+                                            if (type != null && type.equalsIgnoreCase("Rent") && rentDuration != null && !rentDuration.isEmpty() && !rentDuration.equals("N/A")) {
+                                                TextView tvRentDuration = new TextView(this);
+                                                tvRentDuration.setText("Rent Duration: " + rentDuration);
+                                                tvRentDuration.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+                                                tvRentDuration.setTextColor(Color.DKGRAY);
+                                                textInfoLayout.addView(tvRentDuration);
+                                            }
 
-                                        Button actionButton = new Button(this);
-                                        final String postType = type;
+                                            Button actionButton = new Button(this);
+                                            final String postType = type;
 
-                                        if (isSold) {
-                                            actionButton.setText("Not Available");
-                                            actionButton.setEnabled(false);
-                                            actionButton.setBackgroundColor(Color.GRAY);
-                                        } else {
+                                            // This 'if (isSold)' block is now part of the outer check,
+                                            // so the button will always be for an available item.
                                             if ("Rent".equalsIgnoreCase(postType)) {
                                                 actionButton.setText("Rent");
                                             } else {
@@ -278,22 +277,22 @@ public class NewsfeedActivity extends AppCompatActivity {
                                                     Toast.makeText(NewsfeedActivity.this, "Seller information not available.", Toast.LENGTH_SHORT).show();
                                                 }
                                             });
+
+                                            actionButton.setTextColor(Color.BLACK);
+                                            actionButton.setTypeface(null, Typeface.BOLD);
+
+                                            LinearLayout.LayoutParams buttonParams = new LinearLayout.LayoutParams(
+                                                    dpToPx(100),
+                                                    dpToPx(40)
+                                            );
+                                            buttonParams.setMargins(0, dpToPx(8), 0, 0);
+                                            actionButton.setLayoutParams(buttonParams);
+                                            textInfoLayout.addView(actionButton);
+
+                                            postLayout.addView(textInfoLayout);
+                                            cardView.addView(postLayout);
+                                            newsfeedContainer.addView(cardView);
                                         }
-
-                                        actionButton.setTextColor(Color.BLACK);
-                                        actionButton.setTypeface(null, Typeface.BOLD);
-
-                                        LinearLayout.LayoutParams buttonParams = new LinearLayout.LayoutParams(
-                                                dpToPx(100),
-                                                dpToPx(40)
-                                        );
-                                        buttonParams.setMargins(0, dpToPx(8), 0, 0);
-                                        actionButton.setLayoutParams(buttonParams);
-                                        textInfoLayout.addView(actionButton);
-
-                                        postLayout.addView(textInfoLayout);
-                                        cardView.addView(postLayout);
-                                        newsfeedContainer.addView(cardView);
                                     }
                                 }
                             })
@@ -519,14 +518,14 @@ public class NewsfeedActivity extends AppCompatActivity {
                         order.put("sellerId", sellerId);
                         order.put("sellerName", sellerName);
                         order.put("orderType", orderType);
-                        order.put("status", "pending");
+                        order.put("status", "pending"); // Initial status
                         order.put("timestamp", com.google.firebase.firestore.FieldValue.serverTimestamp());
 
                         db.collection("orders")
                                 .add(order)
                                 .addOnSuccessListener(documentReference -> {
                                     Toast.makeText(NewsfeedActivity.this, "Order placed successfully!", Toast.LENGTH_SHORT).show();
-
+                                    // Optionally, you might want to refresh the posts here or navigate away
                                 })
                                 .addOnFailureListener(e -> {
                                     Toast.makeText(NewsfeedActivity.this, "Failed to place order.", Toast.LENGTH_SHORT).show();
