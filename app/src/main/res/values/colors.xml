@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <!-- Standard colors -->
+    <color name="black">#FF000000</color> <!-- Black color -->
+    <color name="white">#FFFFFFFF</color> <!-- White color -->
+
+
+    <color name="purple_500">#673AB7</color>
+    <color name="purple_700">#512DA8</color>
+    <color name="purple_900">#4527A0</color>
+    <color name="divider_gray">#CCCCCC</color>
+    <color name="border_gray">#BDBDBD</color>
+    <color name="light_background">#F5F5F5</color>
 </resources>

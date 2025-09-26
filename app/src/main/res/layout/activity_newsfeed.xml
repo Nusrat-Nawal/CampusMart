@@ -6,15 +6,14 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <!-- Top Bar with 3 buttons -->
     <LinearLayout
         android:id="@+id/buttonContainer"
         style="?android:attr/buttonBarStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#673AB7"
+        android:background="@color/purple_500"
         android:orientation="horizontal"
-        android:padding="8dp">
+        android:padding="4dp">
 
         <Button
             android:id="@+id/buttonPostItem"
@@ -22,7 +21,17 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/post_item" />
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:text="@string/post_item"
+            android:textSize="14sp"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:background="@drawable/button_selector_newsfeed" />
 
         <Button
             android:id="@+id/buttonWishboard"
@@ -30,7 +39,17 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/wishboard" />
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:text="@string/wishboard"
+            android:textSize="14sp"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:background="@drawable/button_selector_newsfeed" />
 
         <Button
             android:id="@+id/buttonProfile"
@@ -38,10 +57,20 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/profile" />
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:text="@string/profile"
+            android:textSize="14sp"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:background="@drawable/button_selector_newsfeed" />
     </LinearLayout>
 
-    <!-- Category Filter Spinner -->
+
     <Spinner
         android:id="@+id/categorySpinner"
         android:layout_width="match_parent"
@@ -49,9 +78,11 @@
         android:layout_marginTop="8dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="4dp" />
+        android:layout_marginBottom="4dp"
+        android:padding="12dp"
+        android:background="@drawable/spinner_background" />
 
-    <!-- ScrollView for dynamic posts from Firebase -->
+
     <ScrollView
         android:id="@+id/scrollViewNewsfeed"
         android:layout_width="match_parent"

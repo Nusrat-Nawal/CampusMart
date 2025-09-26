@@ -40,31 +40,26 @@ public class NewsfeedActivity extends AppCompatActivity {
     private static final String TAG = "NewsfeedActivity";
     private FirebaseFirestore db;
     private LinearLayout newsfeedContainer;
-    private Spinner categorySpinner; // Declare the spinner
-    private String selectedCategory = "All"; // Variable to hold the currently selected category
+    private Spinner categorySpinner;
+    private String selectedCategory = "All";
 
-    // Define categories as constants for consistency
-    // Make sure these match the EXACT values you store in Firestore's "category" field
     private static final String CATEGORY_ALL = "All";
     private static final String CATEGORY_ELECTRONICS = "Electronics & Stationary";
     private static final String CATEGORY_COSMETICS = "Cosmetics";
     private static final String CATEGORY_ACCESSORIES = "Accessories";
-    // Add any other categories you have in your Firestore here
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_newsfeed); // Ensure this ID is correct
+        setContentView(R.layout.activity_newsfeed);
 
         db = FirebaseFirestore.getInstance();
-        newsfeedContainer = findViewById(R.id.newsfeedContainer); // Ensure this ID is correct
-        categorySpinner = findViewById(R.id.categorySpinner); // Find the spinner
+        newsfeedContainer = findViewById(R.id.newsfeedContainer);
+        categorySpinner = findViewById(R.id.categorySpinner);
 
-        // --- Spinner Setup ---
+
         setupCategorySpinner();
-        // --- End Spinner Setup ---
 
-        // Button click listeners for navigation
         findViewById(R.id.buttonPostItem).setOnClickListener(v ->
                 startActivity(new Intent(this, PostItemActivity.class))
         );
@@ -81,11 +76,9 @@ public class NewsfeedActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        // Reload posts whenever the activity resumes, using the last selected category
         loadPosts(selectedCategory);
     }
 
-    // Helper function to convert DP to pixels for layout parameters
     private int dpToPx(int dp) {
         return (int) TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP,
@@ -94,47 +87,33 @@ public class NewsfeedActivity extends AppCompatActivity {
         );
     }
 
-    // --- NEW METHOD: Setup Spinner ---
     private void setupCategorySpinner() {
-        // Define the categories that will appear in the spinner
-        // Ensure these strings match your Firestore category field values EXACTLY
         String[] categories = {CATEGORY_ALL, CATEGORY_ELECTRONICS, CATEGORY_COSMETICS, CATEGORY_ACCESSORIES};
 
-        // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, categories);
-        // Specify the layout to use when the list of choices appears
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        // Apply the adapter to the spinner
-        categorySpinner.setAdapter(adapter);
 
-        // Set an OnItemSelectedListener to the spinner to handle user selections
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        categorySpinner.setAdapter(adapter);
         categorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                // Get the selected category string from the adapter
+
                 selectedCategory = (String) parentView.getItemAtPosition(position);
                 Log.d(TAG, "Selected category: " + selectedCategory);
-                // Reload posts based on the new selection
                 loadPosts(selectedCategory);
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
-                // Do nothing when nothing is selected
+
             }
         });
     }
-    // --- END NEW METHOD ---
-
-    // --- MODIFIED METHOD: loadPosts ---
-    // This method now accepts a 'category' parameter and uses it for filtering
     private void loadPosts(String category) {
-        // Ensure user is authenticated before loading posts
         if (FirebaseAuth.getInstance().getCurrentUser() == null) {
             Log.e(TAG, "User is NOT authenticated. Cannot load posts.");
             Toast.makeText(this, "Error: Not authenticated. Please log in again to see posts.", Toast.LENGTH_LONG).show();
-            newsfeedContainer.removeAllViews(); // Clear existing views
-            // Display a message that user needs to log in
+            newsfeedContainer.removeAllViews();
             TextView tv = new TextView(this);
             tv.setText("Please log in to see the newsfeed.");
             tv.setGravity(Gravity.CENTER);
@@ -145,61 +124,45 @@ public class NewsfeedActivity extends AppCompatActivity {
             Log.d(TAG, "User is authenticated: " + FirebaseAuth.getInstance().getCurrentUser().getUid());
         }
 
-        // --- Step 1: Check for sold/rented products first ---
-        // This prevents displaying items that are no longer available.
         db.collection("orders")
-                .whereEqualTo("status", "accepted") // Assuming "accepted" orders mean the product is sold/rented
+                .whereEqualTo("status", "accepted")
                 .get()
                 .addOnSuccessListener(orderSnapshots -> {
                     Set<String> soldProductIds = new HashSet<>();
                     for (DocumentSnapshot orderDoc : orderSnapshots) {
-                        // Add the productId of accepted orders to a set
                         soldProductIds.add(orderDoc.getString("productId"));
                     }
 
-                    // --- Step 2: Fetch posts with category filtering ---
                     Query query = db.collection("posts");
 
-                    // Apply the category filter ONLY if the selected category is NOT "All"
                     if (!category.equals(CATEGORY_ALL)) {
-                        // !!! IMPORTANT !!!
-                        // Ensure your Firestore documents in the 'posts' collection
-                        // have a field named "category" that EXACTLY matches the string values
-                        // in your CATEGORY constants (case-sensitive, spelling).
                         query = query.whereEqualTo("category", category);
                     }
 
-                    // Add ordering (newest first)
                     query = query.orderBy("timestamp", Query.Direction.DESCENDING);
 
-                    // Execute the filtered and ordered query for posts
                     query.get()
                             .addOnSuccessListener(queryDocumentSnapshots -> {
-                                newsfeedContainer.removeAllViews(); // Clear previous posts before adding new ones
+                                newsfeedContainer.removeAllViews();
                                 if (queryDocumentSnapshots.isEmpty()) {
-                                    // Display a message if no posts are found for the selected category
                                     TextView tv = new TextView(this);
                                     tv.setText("No posts yet in this category. Be the first to post!");
                                     tv.setGravity(Gravity.CENTER);
                                     tv.setTextSize(18);
                                     newsfeedContainer.addView(tv);
                                 } else {
-                                    // Iterate through each document (post) returned by the query
+
                                     for (DocumentSnapshot doc : queryDocumentSnapshots) {
-                                        // Extract data directly from the DocumentSnapshot
                                         String name = doc.getString("name");
                                         String price = doc.getString("price");
                                         String type = doc.getString("type");
-                                        String postCategory = doc.getString("category"); // Get the category from Firestore
+                                        String postCategory = doc.getString("category");
                                         String rentDuration = doc.getString("rentDuration");
-                                        String authorId = doc.getString("authorId"); // Get authorId for showSellerInfo
-                                        String imageBase64 = doc.getString("imageBase64"); // For image loading
+                                        String authorId = doc.getString("authorId");
+                                        String imageBase64 = doc.getString("imageBase64");
+                                        final String postId = doc.getId();
+                                        boolean isSold = soldProductIds.contains(postId);
 
-                                        // Check if this product has already been sold or rented
-                                        final String postId = doc.getId(); // Get the document ID for the current post
-                                        boolean isSold = soldProductIds.contains(postId); // Check if its ID is in the set of sold products
-
-                                        // --- Dynamically Create UI Elements for each post ---
                                         CardView cardView = new CardView(this);
                                         LinearLayout.LayoutParams cardLayoutParams = new LinearLayout.LayoutParams(
                                                 LinearLayout.LayoutParams.MATCH_PARENT,
@@ -234,15 +197,15 @@ public class NewsfeedActivity extends AppCompatActivity {
                                                 Glide.with(NewsfeedActivity.this)
                                                         .asBitmap()
                                                         .load(imageBytes)
-                                                        .placeholder(R.drawable.ic_launcher_background) // Default placeholder
-                                                        .error(R.drawable.ic_launcher_foreground)     // Error image
+                                                        .placeholder(R.drawable.ic_launcher_background)
+                                                        .error(R.drawable.ic_launcher_foreground)
                                                         .into(imageView);
                                             } catch (IllegalArgumentException e) {
                                                 Log.e(TAG, "Error decoding Base64 string for post: " + doc.getId(), e);
-                                                imageView.setImageResource(R.drawable.ic_launcher_foreground); // Show error image on decode error
+                                                imageView.setImageResource(R.drawable.ic_launcher_foreground);
                                             }
                                         } else {
-                                            imageView.setImageResource(R.drawable.ic_launcher_background); // Default placeholder if no image
+                                            imageView.setImageResource(R.drawable.ic_launcher_background);
                                         }
                                         postLayout.addView(imageView);
 
@@ -252,8 +215,6 @@ public class NewsfeedActivity extends AppCompatActivity {
                                                 0, LinearLayout.LayoutParams.WRAP_CONTENT);
                                         textInfoParams.weight = 1.5f;
                                         textInfoLayout.setLayoutParams(textInfoParams);
-
-                                        // --- Populate Text Views ---
                                         TextView tvName = new TextView(this);
                                         tvName.setText((name != null ? name : "N/A"));
                                         tvName.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
@@ -264,7 +225,6 @@ public class NewsfeedActivity extends AppCompatActivity {
                                         tvName.setLayoutParams(nameParams);
                                         textInfoLayout.addView(tvName);
 
-                                        // Display the category fetched from Firestore
                                         TextView tvCategory = new TextView(this);
                                         tvCategory.setText("Category: " + (postCategory != null ? postCategory : "N/A"));
                                         tvCategory.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
@@ -280,14 +240,13 @@ public class NewsfeedActivity extends AppCompatActivity {
                                         TextView tvPrice = new TextView(this);
                                         tvPrice.setText("Price: " + (price != null ? price : "0") + " Tk");
                                         tvPrice.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
-                                        tvPrice.setTextColor(Color.rgb(0, 100, 0)); // Dark Green
+                                        tvPrice.setTextColor(Color.rgb(0, 100, 0));
                                         tvPrice.setTypeface(null, Typeface.BOLD);
                                         LinearLayout.LayoutParams priceParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                                         priceParams.setMargins(0,dpToPx(4),0,0);
                                         tvPrice.setLayoutParams(priceParams);
                                         textInfoLayout.addView(tvPrice);
 
-                                        // Display rent duration if applicable
                                         if (type != null && type.equalsIgnoreCase("Rent") && rentDuration != null && !rentDuration.isEmpty() && !rentDuration.equals("N/A")) {
                                             TextView tvRentDuration = new TextView(this);
                                             tvRentDuration.setText("Rent Duration: " + rentDuration);
@@ -295,28 +254,23 @@ public class NewsfeedActivity extends AppCompatActivity {
                                             tvRentDuration.setTextColor(Color.DKGRAY);
                                             textInfoLayout.addView(tvRentDuration);
                                         }
-                                        // --- End Populate Text Views ---
 
-                                        // --- Configure Action Button (Buy/Rent or Not Available) ---
                                         Button actionButton = new Button(this);
-                                        final String postType = type; // Store type for the listener
+                                        final String postType = type;
 
-                                        if (isSold) { // Check if the product is sold/rented based on the initial query
+                                        if (isSold) {
                                             actionButton.setText("Not Available");
-                                            actionButton.setEnabled(false); // Disable the button
-                                            actionButton.setBackgroundColor(Color.GRAY); // Change background color
+                                            actionButton.setEnabled(false);
+                                            actionButton.setBackgroundColor(Color.GRAY);
                                         } else {
-                                            // Set button text based on post type
                                             if ("Rent".equalsIgnoreCase(postType)) {
                                                 actionButton.setText("Rent");
                                             } else {
                                                 actionButton.setText("Buy");
                                             }
-                                            actionButton.setBackgroundResource(R.drawable.button_background); // Your custom button background
-                                            // Set click listener for Buy/Rent button
+                                            actionButton.setBackgroundResource(R.drawable.button_background);
                                             actionButton.setOnClickListener(v -> {
                                                 Log.d(TAG, "Attempting to show seller info for post: " + doc.getId());
-                                                // authorId is needed to fetch seller details
                                                 if (authorId != null && !authorId.isEmpty()) {
                                                     showSellerInfo(authorId, doc.getId(), postType);
                                                 } else {
@@ -336,11 +290,10 @@ public class NewsfeedActivity extends AppCompatActivity {
                                         buttonParams.setMargins(0, dpToPx(8), 0, 0);
                                         actionButton.setLayoutParams(buttonParams);
                                         textInfoLayout.addView(actionButton);
-                                        // --- End Action Button Configuration ---
 
-                                        postLayout.addView(textInfoLayout); // Add text layout to the horizontal post layout
-                                        cardView.addView(postLayout);       // Add the post layout to the card view
-                                        newsfeedContainer.addView(cardView); // Add the created card view to the main newsfeed container
+                                        postLayout.addView(textInfoLayout);
+                                        cardView.addView(postLayout);
+                                        newsfeedContainer.addView(cardView);
                                     }
                                 }
                             })
@@ -352,21 +305,17 @@ public class NewsfeedActivity extends AppCompatActivity {
                 .addOnFailureListener(e -> {
                     Log.e(TAG, "Error loading orders from Firestore: " + e.getMessage(), e);
                     Toast.makeText(NewsfeedActivity.this, "Error checking product availability: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                    // Fallback mechanism: If fetching orders fails, load posts without checking availability.
                     loadPostsWithoutAvailabilityCheck();
                 });
     }
 
-    // This method is called as a fallback if fetching orders (for availability check) fails.
-    // It loads all posts without checking if they are sold/rented.
     private void loadPostsWithoutAvailabilityCheck() {
         db.collection("posts")
                 .orderBy("timestamp", Query.Direction.DESCENDING)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
-                    newsfeedContainer.removeAllViews(); // Clear existing views
+                    newsfeedContainer.removeAllViews();
                     if (queryDocumentSnapshots.isEmpty()) {
-                        // Display message if no posts are found
                         TextView tv = new TextView(this);
                         tv.setText("No posts yet. Be the first to post!");
                         tv.setGravity(Gravity.CENTER);
@@ -374,9 +323,6 @@ public class NewsfeedActivity extends AppCompatActivity {
                         newsfeedContainer.addView(tv);
                     } else {
                         for (DocumentSnapshot doc : queryDocumentSnapshots) {
-                            // --- Dynamically Create UI Elements for each post ---
-                            // This part is a repetition of the UI creation logic from loadPosts().
-                            // For this direct-UI approach, we repeat the view creation.
 
                             CardView cardView = new CardView(this);
                             LinearLayout.LayoutParams cardLayoutParams = new LinearLayout.LayoutParams(
@@ -479,8 +425,7 @@ public class NewsfeedActivity extends AppCompatActivity {
 
                             Button actionButton = new Button(this);
                             final String postType = type;
-                            // In this fallback, we don't know availability, so set a generic button
-                            actionButton.setText("View Details"); // Or Buy/Rent if you prefer
+                            actionButton.setText("View Details");
                             actionButton.setBackgroundResource(R.drawable.button_background);
                             actionButton.setTextColor(Color.BLACK);
                             actionButton.setTypeface(null, Typeface.BOLD);
@@ -516,8 +461,7 @@ public class NewsfeedActivity extends AppCompatActivity {
                 });
     }
 
-    // This method is called when an action button is clicked on a post.
-    // It fetches seller details and displays them in an AlertDialog.
+
     private void showSellerInfo(String sellerId, String postId, String postType) {
         Log.d(TAG, "Fetching seller info for userId: " + sellerId);
         db.collection("users").document(sellerId).get()
@@ -526,10 +470,9 @@ public class NewsfeedActivity extends AppCompatActivity {
                         String name = documentSnapshot.getString("name");
                         String email = documentSnapshot.getString("email");
                         String phoneNumber = documentSnapshot.getString("phoneNumber");
-                        String address = documentSnapshot.getString("university"); // Assuming "university" is used for address
+                        String address = documentSnapshot.getString("university");
                         final String sellerName = name;
 
-                        // Display seller info in an AlertDialog
                         new AlertDialog.Builder(this)
                                 .setTitle("Seller Information")
                                 .setMessage("Seller Name: " + sellerName + "\n" +
@@ -538,7 +481,6 @@ public class NewsfeedActivity extends AppCompatActivity {
                                         "Seller Address: " + address)
                                 .setPositiveButton("OK", null) // Dismiss dialog
                                 .setNegativeButton("Confirm Order", (dialog, which) -> {
-                                    // If user confirms, proceed to create order
                                     createOrder(postId, sellerId, postType, sellerName);
                                 })
                                 .show();
@@ -553,48 +495,38 @@ public class NewsfeedActivity extends AppCompatActivity {
                 });
     }
 
-    // This method is called when the "Confirm Order" button is clicked in the AlertDialog.
-    // It creates a new document in the "orders" collection in Firestore.
     private void createOrder(String postId, String sellerId, String orderType, String sellerName) {
         String buyerId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        // Prevent users from ordering their own products
         if(buyerId.equals(sellerId)) {
             Toast.makeText(this, "You cannot order your own product.", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Fetch buyer's details to include in the order
         db.collection("users").document(buyerId).get().addOnSuccessListener(buyerDoc -> {
             if (buyerDoc.exists()) {
                 String buyerName = buyerDoc.getString("name");
 
-                // Fetch post details to include in the order
                 db.collection("posts").document(postId).get().addOnSuccessListener(postDoc -> {
                     if (postDoc.exists()) {
                         String productName = postDoc.getString("name");
 
-                        // Create the order data map
                         Map<String, Object> order = new HashMap<>();
                         order.put("productId", postId);
                         order.put("productName", productName);
                         order.put("buyerId", buyerId);
                         order.put("buyerName", buyerName);
-                        // Removed contact number fields as per user request
                         order.put("sellerId", sellerId);
                         order.put("sellerName", sellerName);
                         order.put("orderType", orderType);
-                        order.put("status", "pending"); // Initial status
-                        // Use server timestamp for accurate ordering
+                        order.put("status", "pending");
                         order.put("timestamp", com.google.firebase.firestore.FieldValue.serverTimestamp());
 
-                        // Add the order to the "orders" collection
                         db.collection("orders")
                                 .add(order)
                                 .addOnSuccessListener(documentReference -> {
                                     Toast.makeText(NewsfeedActivity.this, "Order placed successfully!", Toast.LENGTH_SHORT).show();
-                                    // Optionally, you might want to update the post's status or mark it as sold here,
-                                    // but the current logic relies on checking "accepted" orders.
+
                                 })
                                 .addOnFailureListener(e -> {
                                     Toast.makeText(NewsfeedActivity.this, "Failed to place order.", Toast.LENGTH_SHORT).show();
