@@ -50,6 +50,7 @@ public class GeminiApi {
             String base64Image = Base64.encodeToString(imageData, Base64.NO_WRAP);
 
             String requestUrl = Constants.GEMINI_BASE_URL + apiKey;
+            Log.d(TAG, "Request URL: " + requestUrl);
 
             // Constructing the JSON request body
             JsonObject imagePart = new JsonObject();
