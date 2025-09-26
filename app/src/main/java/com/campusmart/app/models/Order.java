@@ -9,7 +9,7 @@ public class Order {
     private String productId;
     private String buyerId;
     private String sellerId;
-    private String orderType;
+    private String orderType; // This field you already had
     private String status;
     private String productName;
     private String buyerName;
