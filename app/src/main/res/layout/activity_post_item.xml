@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    tools:context=".ui.PostItemActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/editTextName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Item Name"
+            android:inputType="textCapWords"
+            android:layout_marginBottom="8dp"/>
+
+        <EditText
+            android:id="@+id/editTextPrice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Price"
+            android:inputType="numberDecimal"
+            android:layout_marginBottom="8dp"/>
+
+        <Spinner
+            android:id="@+id/spinnerCategory"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:entries="@array/post_item_categories"
+            android:layout_marginBottom="8dp"
+            android:minHeight="48dp"/>
+
+        <ImageView
+            android:id="@+id/imageViewPreview"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginBottom="8dp"
+            android:scaleType="centerCrop"
+            android:background="@android:color/darker_gray"
+            android:contentDescription="Image Preview" />
+
+        <Button
+            android:id="@+id/buttonUploadImage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Upload Image"
+            android:layout_marginBottom="8dp"/>
+
+        <Spinner
+            android:id="@+id/spinnerType"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:entries="@array/post_item_types"
+            android:layout_marginBottom="8dp"
+            android:minHeight="48dp"/>
+
+        <EditText
+            android:id="@+id/editTextRentDuration"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Rent Duration (e.g., 3 days, 1 week)"
+            android:inputType="textCapSentences"
+            android:visibility="gone"
+            android:layout_marginBottom="16dp"/>
+
+        <Button
+            android:id="@+id/buttonProceedToPayment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Proceed to Payment"
+            android:layout_marginBottom="8dp"/>
+
+        <Button
+            android:id="@+id/buttonConfirmPayment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Confirm Payment"
+            android:visibility="gone"/>
+
+    </LinearLayout>
+</ScrollView>

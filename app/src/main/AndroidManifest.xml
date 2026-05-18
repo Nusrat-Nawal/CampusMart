@@ -35,6 +35,38 @@
             android:name=".ui.MainActivity"
             android:exported="false" />
 
+        <activity
+            android:name=".ui.NewsfeedActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.PostItemActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.PaymentActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.PostWishActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.WishboardActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.NotificationsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.ProfileActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.MySalesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.MyOrdersActivity"
+            android:exported="false" />
     </application>
 
 </manifest>
